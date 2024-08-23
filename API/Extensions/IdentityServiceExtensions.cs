@@ -9,19 +9,31 @@ using Persistence;
 
 namespace API.Extensions
 {
-    public static class IdentityServiceExtensions
+    public static class IdentityServiceExtensions 
     {
-        public static IServiceCollection AddIdentityService(this IServiceCollection services,
-            IConfiguration config)
+        public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
+                    var tokenKey = config["TokenKey"];
+        if (string.IsNullOrEmpty(tokenKey))
+        {
+            Console.WriteLine("TokenKey is null or empty in IdentityServiceExtensions.cs.");
+            throw new ArgumentNullException(nameof(tokenKey), "TokenKey configuration value cannot be null or empty.");
+        }
+        else
+        {
+            Console.WriteLine($"TokenKey in IdentityServiceExtensions.cs: {tokenKey}");
+        }
             services.AddIdentityCore<AppUser>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<DataContext>();
+            byte[] prekey = Encoding.UTF8.GetBytes(tokenKey);
+                Console.WriteLine("prekey: " + BitConverter.ToString(prekey));
+          var key = new SymmetricSecurityKey(prekey);
+            Console.WriteLine("key created: " + (key?.KeyId ?? "Key created successfully"));
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
@@ -39,7 +51,7 @@ namespace API.Extensions
                         {
                             var accessToken = context.Request.Query["access_token"];
                             var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
                             {
                                 context.Token = accessToken;
                             }
