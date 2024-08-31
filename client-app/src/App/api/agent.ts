@@ -80,7 +80,7 @@ const Activities = {
     list: (params: URLSearchParams) => axios.get<PaginationResult<Activity[]>>('/activities', {params})
     .then(responeBody),
     details: (id: string) => requests.get<Activity>(`/activities/${id}`),
-    create: (activity: ActivityFormValues) => requests.post<void>('/activities', activity),
+    create: (activity: ActivityFormValues) => requests.post<void>(`/activities'`, activity),
     update: (activity: ActivityFormValues) => requests.put<void>(`/activities/${activity.id}`, activity),
     delete: (id: string) => requests.del<void>(`/activities/${id}`),
     attend: (id: string) => requests.post<void>(`/activities/${id}/attend`, {})
@@ -95,11 +95,11 @@ const Account = {
 
 const Profiles = {
     get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
-    uploadPhoto: (file: Blob) => {
+    uploadPhoto: (file: any) => {
         let formData = new FormData();
         formData.append('File', file);
         return axios.post<Photo>('photos', formData, {
-            headers: { 'Content-type': 'multipart/form-data' }
+            headers: { 'Content-Type': 'multipart/form-data' }
         })
     },
     setMainPhoto: (id: string) => requests.post(`/photos/${id}/setMain`, {}),
