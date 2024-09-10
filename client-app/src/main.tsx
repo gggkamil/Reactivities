@@ -8,7 +8,7 @@ import './app/layout/styles.css'
 import { StoreContext, store } from './App/stores/store'
 import { RouterProvider } from 'react-router-dom'
 import { router } from './App/router/Routes'
-
+//Today I finally done with this app! 2024-09-10 KD
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <StoreContext.Provider
