@@ -11,7 +11,10 @@ export default observer(function ProfileAbout() {
         <TabPane>
             <Grid>
                 <Grid.Column width='16'>
-                    <Header floated='left' icon='user' content={`About ${profile?.displayName}`} />
+                    <Header 
+                    floated='left' 
+                    icon='user' 
+                    content={`About ${profile?.displayName}`} />
                     {isCurrentUser && (
                         <Button
                             floated='right'
